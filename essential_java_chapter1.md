@@ -1,4 +1,4 @@
-# Chapter 1
+# Chapter 01 - 자바를 시작하기 전에
 ## 자바 (Java Programming Language)
 
 ### 자바란?
