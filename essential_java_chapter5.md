@@ -74,3 +74,52 @@ System.arraycopy()를 이용한 배열의 복사
   - 각 요소들이 연속적으로 저장되어 있는 배열의 특성을 사용해 통째로 복사
 - System.arraycopy(num, 0, newNum, 0, num.length) -> num[0]에서 newNum[0]으로 num.length개의 데이터를 복사
 - 복사하려는 내용보다 여유 공간이 적으면 ArrayIndexOutOfBoundsException
+
+## 2. String 배열
+
+### 2.1 String 배열의 선언과 생성
+
+- int 배열의 선언과 생성 방법이 다르지 않음
+- ex) String[] name = new String[3];
+  - 3개의 문자열을 담을 수 있는 배열을 생성
+- 각 요소의 값은 null로 초기화 (기본값이 null이므로)
+
+### 2.2 String 배열의 초기화
+
+- 배열의 각 요소에 문자열을 지정
+- 또는 괄호를 사용해서 간단히 초기화
+- 배열에 실제 객체가 아닌 객체의 주소가 저장됨
+  - 기본형 배열이 아닌 참조형 배열이므로 (참조형 배열을 객체 배열이라고도 부름)
+
+### 2.3 char 배열과 String 클래스
+
+- 문자열은 '문자를 연이어 늘어놓은 것'을 의미
+- String 클래스는 char 배열에 기능(메서드)를 추가한 것
+  - 기능은 함수를 의미하는 것
+- String 객체는 읽을 수만 있을 뿐 내용을 변경 불가능
+
+String 클래스의 주요 메서드
+
+- charAt(int index) : 문자열에서 해당 위치에 있는 문자 반환
+- int length() : 문자열의 길이 반환
+- String substring(int from, int to) : 해당 범위에 있는 문자열을 반환 (to는 범위에 포함 X)
+  - subString이 아닌 substring 임에 주의
+- boolean equals(Object obj) : 문자열의 내용이 obj와 같은지 return
+- char[] toCharArray() : 문자열을 문자 배열로 변환해서 반환
+
+char 배열과 String 클래스의 변환
+
+- char 배열을 charArr이라고 할 때 `new String(charArr)`로 Sring으로 변환
+- 문자열 str이 있을 때 `str.toCharArray()`로 char 배열로 변환
+- println()로 문자 배열을 출력하면 문자 배열의 모든 요소를 이어서 한 줄로 출력
+
+### 2.4 커맨드 라인을 통해 입력받기
+
+- 프로그램 실행 시 클래스 이름 뒤에 공백문자로 구분하여 여러 개의 문자열 전달 가능
+- main 메서드 내에서 args[0], args[1]과 같은 방식으로 접근 가능
+- 매개변수의 공백이 있을 시 큰따옴표로 감싸주어야 함
+- 숫자를 입력해도 문자열로 처리
+  - int num = Integer.parseInt("123")과 같은 방식으로 숫자로 파싱
+- 커맨드 라인에 매개변수가 없을 시 크기가 0인 배열이 생성
+  - args.length의 값은 0
+  - args의 값이 null일 시 에러가 발생하는 것을 막기 위함
