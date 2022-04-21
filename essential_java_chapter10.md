@@ -187,7 +187,7 @@ OffsetDateTime
 - ZoneId가 아닌 ZoneOffset을 사용하는 것이 OffsetDateTime
 - ZoneOffset은 단지 시간대를 시간의 차이로만 구분
 
-ZonedDateTinme의 변환
+ZonedDateTime의 변환
 
 - ZoneDateTime도 날짜와 시간에 관련된 다른 클래스로 변환하는 메서드들을 가지고 있음
 - ZonedDateTime을 GregorianCalendar로 바꾸기 위해선 `from(ZonedDateTime)` 메서드 사용
@@ -245,7 +245,6 @@ of(), with()
 
 - 파싱 : 날짜와 시간을 원하는 형식으로 출력 & 해석
 - 형식화와 관련된 클래스들은 `java.time.format` 패키지
-  - DateTimeFormatter가 핵심
   - 다양한 형식 제공 & 그 외의 형식은 직접 정의해서 사용
   - LocalDate나 LocalTime 같은 클래스에도 존재 format() 메서드 존재
 
