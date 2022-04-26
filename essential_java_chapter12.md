@@ -48,18 +48,18 @@
 - 제네릭 타입에 `extends`를 사용하면 특정 타입의 자손들만 대입할 수 있게 제한 가능
 - 인터페이스를 구현해야 하는 제약 역시 `extends`로 표현
   - implements를 사용하지 않음에 주의
-  - 자손 제약과 구현 인터페이스가 존재한다면 `&` 기호로 연결 (<T extends ExampleClass & ExampleInterface>)
+  - 자손 제약과 구현 인터페이스가 존재한다면 `&` 기호로 연결 (\<T extends ExampleClass & ExampleInterface>)
 
 ### 1.5 와일드 카드
 
 - 하나의 참조변수로 서로 다른 타입에 대입된 여러 지네릭 객체를 다루기 위해 사용
   - 메서드를 호출할 때마다 다른 타입을 대입해야 할 때 사용
-- <T extends Example> vs <? extends Example>
-  - **<T extends Example>는 메서드를 호출할 때마다 다른 지네릭 타입을 대입할 수 있게 한 것**
-  - **<? extends Example>는 하나의 참조변수로 서로 다른 타입에 대입된 여러 지네릭 객체를 다루기 위한 것**
-- <? extends T> : 와일드 카드의 상한 제한. T와 그 자손들만 가능
-- <? super T> : 와일드 카드의 하한 제한. T와 그 조상들만 가능
-- <?> : 제한 없음. 모든 타입이 가능. (<? extends Object>와 동일)
+- \<T extends Example> vs <? extends Example>
+  - **\<T extends Example>는 메서드를 호출할 때마다 다른 지네릭 타입을 대입할 수 있게 한 것**
+  - **\<? extends Example>는 하나의 참조변수로 서로 다른 타입에 대입된 여러 지네릭 객체를 다루기 위한 것**
+- \<? extends T> : 와일드 카드의 상한 제한. T와 그 자손들만 가능
+- \<? super T> : 와일드 카드의 하한 제한. T와 그 조상들만 가능
+- \<?> : 제한 없음. 모든 타입이 가능. (\<? extends Object>와 동일)
 
 ```java
   TestList<Parent> testList = new TestList<Parent>(); // 허용
@@ -79,7 +79,7 @@
   - 메서드 내에서만 사용될 것
 - 메서드 호출 시 타입 변수에 타입을 대입해야 하지만 대부분의 경우 컴파일러가 추정 가능하므로 생략
   - 메서드를 호출할 때 타입을 생략할 수 없는 경우에는 참조변수나 클래스 이름 생략 불가
-- public static <T extends Comparable<? super T>> void sort(List<T> list)
+- public static \<T extends Comparable<? super T>> void sort(List\<T> list)
   - 타입 T를 요소로 하는 List를 매개변수로 허용
   - `T`는 Comparable을 구현한 클래스이어야 함
   - Comparable<? super T>이므로 Comparable의 매개변수는 T와 T의 조상 타입이 모두 가능
@@ -93,7 +93,7 @@
 - 특정 타입을 `? extends Object`으로의 형변환도 가능
   - 반대로도 가능하지만 확인되지 않은 형변환이라는 경고 발생
 - Optional<Object>를 Optional<String>으로 직접 형변환 하는 것은 불가능하지만 와일드 카드가 포함된 지네릭 타입으로 형변환하면 가능
-  - Optional<Object> -> Optional<?> -> Optional<T>
+  - Optional\<Object> -> Optional<?> -> Optional\<T>
 
 ### 1.8 지네릭 타입의 제거
 
