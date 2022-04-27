@@ -92,7 +92,7 @@
   - Object여도 불가능
 - 특정 타입을 `? extends Object`으로의 형변환도 가능
   - 반대로도 가능하지만 확인되지 않은 형변환이라는 경고 발생
-- Optional<Object>를 Optional<String>으로 직접 형변환 하는 것은 불가능하지만 와일드 카드가 포함된 지네릭 타입으로 형변환하면 가능
+- Optional\<Object>를 Optional\<String>으로 직접 형변환 하는 것은 불가능하지만 와일드 카드가 포함된 지네릭 타입으로 형변환하면 가능
   - Optional\<Object> -> Optional<?> -> Optional\<T>
 
 ### 1.8 지네릭 타입의 제거
