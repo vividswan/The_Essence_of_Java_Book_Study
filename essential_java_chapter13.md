@@ -136,3 +136,74 @@ main 쓰레드
   - 가비지 컬렉션을 수행하는 Finalizer 쓰레드는 system 그룹에 속함
 - ThreadGroup getThreadGroup() : 쓰레드 자신이 속한 그룹 반환
 - void uncaughtException(Tread t, Throwable e) : 쓰레드 그룹의 쓰레드가 처리되지 않는 예외에 의해 실행이 종료되었을 때, JVM에 의해 이 메서드가 자동으로 호출
+
+### 7. 데몬 쓰레드(daemon thread)
+
+- 일반 쓰레드의 작업을 돕는 보조적인 역할 수행
+  - 일반 쓰레드가 모두 종료될 시 데몬 쓰레드도 자동 종료
+  - 예로는 가비지 컬렉터, 자동 저장, 화면 자동갱신 등등
+- 특정 조건이 만족되면 수행 후 다시 대기
+- 실행하기 전 setDaemon(true)를 호출
+  - 쓰레드를 데몬 쓰레드나 사용자 쓰레드로 변경하는 메서드
+  - 반드시 start()를 호출하기 전에 실행시킬 것
+- 데몬 쓰레드가 생상한 쓰레드는 자동으로 데몬 쓰레드가 됨
+- boolean isDaemon() 메서드로 쓰레드가 데몬 쓰레드인지 확인
+- 프로그램을 시작 시 보조 작업을 하는 많은 데몬 쓰레드들이 실행됨
+  - 각자 system 쓰레드 그룹, main 쓰레드 그룹에 속해있음
+
+### 8. 쓰레드의 실행 제어
+
+- 쓰레드의 상태
+
+  - NEW : 쓰레드가 생성되고 start() 호출되기 전
+  - RUNNALBE : 실행 중 or 실행 가능 상태
+  - BLOCKED : 동기화 블럭에 의해 일시정지된 상태
+  - WAITING, TIMED_WAITING : 쓰레드의 작업이 종료되지는 않았지만 실행 가능하지 않은 일시정지 상태 (TIME_WATING은 일시정지시간이 지정)
+  - TERMINATED : 쓰레드의 작업이 종료된 상태
+
+- 쓰레드의 생성부터 소멸 과정
+  - start()를 호출하면 실행 대기열에 저장 후 자기 차례 기다림 (실행 대기열은 큐와 같은 구조)
+  - 자신의 차례가 되면 실행상태
+  - 주어진 실행 기간이 다되는 경우나 yield()를 만나면 실행 대기 상태로 다시 실행 대기열로 들어감
+  - 실행 중 suspend(), sleep(), wait(), join(), I/O block에 의해 일시정지가 될 수 있음
+  - 지정된 일시정지 시간이 다 되는 경우, notify(), resume(), interrupt()가 호출되면 일시정지를 벗어나서 다시 실행 대기열로 들어감
+  - 실행을 모두 마치는 경우, stop()을 호출하는 경우 쓰레드 소멸
+
+sleep(long millis) - 일정 기간 동안 쓰레드를 멈추게 함
+
+- 두 번째 파라미터를 넣을 시 나노세컨드까지 지정 가능
+- static 메서드
+  - **참조변수와 상관 없이 현재 실행 중인 쓰레드에 대해 작동**
+  - 참조변수를 이용하기보단 `Thread.sleep()`으로 사용할 것
+- 시간이 다 되거나 interrupt()를 호출해야 잠에서 깨어나 실행 대기 상태로 바뀜
+- 항상 try-catch 문으로 예외 처리 필요
+  - InterruptedException은 런타임 예외가 아니므로
+  - try-catch 문을 다루는 메서드를 만들어서 사용하기도 함
+
+interrupt()와 interrupted() - 쓰레드의 작업을 취소한다.
+
+- interrupt()는 쓰레드에게 작업을 멈추라고 요청
+  - 쓰레드를 강제로 종료시키지는 못함
+  - 인스턴스 변수인 interrupted의 상태를 변경하는 것뿐 (true로)
+- interrupted() 메서드로 쓰레드에 대해 interrupt가 호출되었는지 확인 가능 (interrupted의 상태를 호출해서)
+  - 그 후 interrupted의 상태를 false로 변경
+  - isInterrupted()는 쓰레드의 interrupted를 확인하는 것인 동일하지만 상태 변경 X
+- sleep(), wait(), join()에서 interrupt() 호출 시 실행 대기 상태로 바뀜
+  - 멈춰있을 때 interrupt()를 호출하면 InterruptedException이 발생되고 쓰레드의 interrupted의 상태는 false로 자동 초기화
+
+suspend(), resume(), stop()
+
+- suspend()는 sleep()처럼 쓰레드를 멈추게 함
+  - resume()을 호출하면 다시 실행 대기 상태
+  - stop()은 호출되는 즉시 쓰레드가 종료
+- suspend()와 stop()이 교착상태를 일으키기 쉽게 작성되었으므로 사용 권장 X
+  - deprecated 되어 있음
+- suspend와 stop이 동작하지 않을 시 변수 앞에 volatile 선언
+
+yield() - 다른 쓰레드에게 양보한다.
+
+- yield()는 쓰레드 자신에게 주어진 실행 시간을 다음 차례의 쓰레드에게 양보
+  - 할당받은 실행 시간을 사용하던 중 yield()를 만나면 나머지 실행 시간은 포기하고 다시 실행 대기 상태
+- 프로그램의 응답성을 높이고 효율적인 실행을 위해 사용
+  - 쓰레드가 실행을 멈추게 한 상태에서 while이 반복된다면 `바쁜 대기 상태`로 실행 시간을 의미 없이 낭비
+  - 이때 yield()를 호출해서 남은 시간을 while
