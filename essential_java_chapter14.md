@@ -308,3 +308,110 @@ mapToInt(), mapToLong(), mapToDouble()
   - 스트림을 다시 생성해야 하는 불편함을 덜기 위해 `summaryStatistics()` 메서드 제공
 - mapToObj() : 기본형 스트림을 Stream\<T>으로 변환
 - boxed() : IntStream을 Stream\<Integer>로 변환
+
+flatMap() - Stream\<T[]>를 Stream\<T>로 변환
+
+- 스트림의 요소나 map()의 연산 결과가 배열일 경우 Stream\<T>로 변환하기 위해 flatMap() 사용
+  - flatMap()은 스트림의 스트림이 아닌 스트림으로 만들어준다.
+- 스트림의 스트림을 하나의 스트림으로 합칠 때도 flatMap() 사용
+
+### 2.4 Optional\<T>과 OptionalInt
+
+- Optional\<T>는 지네릭 클래스로 `T 타입의 객체를 감싸는 래퍼 클래스`
+  - Optional 타입의 객체에는 모든 타입의 참조 변수를 담을 수 있음
+  - private final T value 필드를 class 내부에서 가지고 있음
+- 반환된 결과가 null 인지 if문으로 체크하는 대신 Optional에 정의된 메서드로 처리 가능
+
+Optional 객체 생성하기
+
+- of() 또는 ofNullable()을 사용
+  - 참조 변수의 값이 null 일 가능성이 있으면 ofNullable() 사용
+  - null로 초기화 하기보단 empty()로 초기화하는 것이 바람직
+
+Optional 객체의 값 가져오기
+
+- Optional 객체의 값은 get()으로 가져올 수 있음
+  - null 일 때는 NoSuchElementException 발생
+- 예외를 대비해서 orElse()로 대체할 값 지정 가능
+  - orElseGet()으로 null 값을 대체할 람다식 지정 가능
+  - orElseThrow()로 null 일 때 지정된 예외를 발생시킬 수도 있음
+- 값의 존재를 확인할 수 있는 isPresent() 메서드와 값이 있을 때 사용할 수 있는 ifPresent() 메서드 존재
+- Stream 클래스에 정의된 메서드 중에서 Optional\<T>을 반환하는 것들이 존재
+  - findAny(), findFirst(), max(), min(), reduce()
+
+OptinalInt, OptionalLong, OptionalDouble
+
+- 기본형을 값으로 하는 Optinal들
+- IntStream 등에도 해당 클래스를 반환하는 메서드 존재
+- 기존의 get()이 getAsInt() 등 메서드 이름이 조금씩 다름
+- 기본형 int가 0 일 때와 아무런 값을 갖지 않는 상황을 구별하기 위해 클래스 내부에 isPresent라는 인스턴스 변수를 두고 구분
+
+### 2.5 스트림의 최종 연산
+
+- 최종 연산은 스트림의 요소를 소모 후 결과를 만들어냄
+- 최종 연산 후엔 스트림이 닫히고 더 이상 사용 불가
+- 최종 결과는 단일 값이거나 배열 또는 컬렉션
+
+forEach()
+
+- 반환 타입 void
+- 스트림의 요소를 출력하는 등의 용도로 사용
+
+조건 검사 - allMatch(), anyMatch(), noneMatch(), findFirst(), findAny()
+
+- 스트림의 요소에 대해 지정된 조건으로 확인하는 데 사용할 수 있는 메서드들
+- 연산 결과로 boolean 반환
+- findAny()와 findFirst()의 반환 타입은 Optional\<T>
+  - 요소가 없을 시 비어있는 Optional 객체를 반환
+
+통계 - count(), sum(), average(), max(), min()
+
+- 스트림의 요소들에 대한 통계 정보를 얻을 수 있는 메서드들
+- 기본형이 아닐 시엔 count(), max(), min() 세 가지 메서드들만 사용 가능
+  - 위의 메서드들을 사용하기보단 기본형 스트림으로 변환하거나 reduce()와 collect()를 사용해서 통계 정보를 얻음
+
+리듀싱 - reduce()
+
+- 스트림의 요소를 줄여나가면서 연산을 수행한 뒤 최종 결과를 반환
+- 처음 두 요소를 가지고 연산한 결과를 그다음 요소와 연산
+  - 매개변수의 타입 BinaryOperator\<T>
+- 매개변수가 초기값을 갖는 reduce()는 초기값과 스트림의 첫 번째 요소로 연산을 시작
+  - 스트림의 요소가 없을 시 초기값이 반환
+  - 초기값이 있으므로 반환 타입이 Optional이 아닌 T (초기 값이 없는 reduce 메서드는 반환값 Optional)
+- combiner 매개변수는 병렬 스트림에 의해 처리된 결과를 합칠 때 사용하는 매개변수
+
+### 2.6 collect()
+
+- 스트림의 최종 연산 중 가장 복잡하면서도 유용하게 활용
+- 리듀싱과 유사한 방식
+- collect()의 매개변수로 어떻게 수집할 것인가에 대한 방법이 정의되어야 하는데 그 방법을 정의한 것이 collector
+- collect()를 사용하기 위해 알아야 하는 것
+  - collect() : 스트림의 최종 연산, 매개변수로 컬렉터를 필요로 함
+  - Collector : 인터페이스, 컬렉터는 이 인터페이스를 구현해야 함
+  - Collectors : 클래스, static 메서드로 미리 작성된 컬렉터를 제공
+- 매개변수로 Collector 구현체가 들어간 collect 메서드와 Supplier, BiConsumer 두 개가 들어간 메서드 존재
+  - 두 번째 메서드는 잘 사용되지 않는다.
+
+스트림을 컬렉션과 배열로 변환 - toList(), toSet(), toMap(), toCollection, toArray()
+
+- List는 Collectors.toList() 사용
+- 특정 컬렉션은 toCollection()에 해당 컬렉션의 생성자 참조를 매개변수로 넣기
+  - ex) ArrayList::new
+- Map의 경우엔 toMap 메서드의 파라미터로 키와 값을 정해줘야 함
+- 스트림에서 저장된 요소들을 배열로 반환하려면 (stream 참조 변수).toArray() 사용
+  - 원하는 타입의 생성자 참조를 매개변수로 지정
+  - 매개변수를 지정하지 않을 시 배열의 타입은 Object[]
+
+통계 - counting(), summingInt(), averageInt(), maxBy(), minBy()
+
+- collect()가 아니어도 위의 연산들의 결과를 얻을 수 있지만 collect()를 사용하면 groupingBy()와 함께 사용 가능
+
+리듀싱 - reducing()
+
+- collect()에서 리듀싱도 사용 가능
+- 매개변수에 따라 3가지 종류가 있음
+
+문자열 결합 - joining()
+
+- 문자열 스트림의 모든 요소를 하나의 문자열로 연결해서 반환
+- 구분자와 접두사, 접미사도 지정 가능
