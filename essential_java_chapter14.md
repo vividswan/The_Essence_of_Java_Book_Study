@@ -415,3 +415,39 @@ forEach()
 
 - 문자열 스트림의 모든 요소를 하나의 문자열로 연결해서 반환
 - 구분자와 접두사, 접미사도 지정 가능
+
+그룹화와 분할 - groupingBy(), partitioningBy()
+
+- 스트림의 요소를 특정 기준으로 그룹화
+- groupingBy()는 스트림의 요소를 Function으로 분류
+- partitioningBy()는 스트림의 요소를 Predicate로 분류
+  - 스트림을 두 그룹으로 나눌 때 groupingBy() 보다 빠름
+
+partitioningBy()에 의한 분류
+
+- 예시로 `collect(Collectors.partitioningBy(Student::isMale))` 과 같은 방식으로 학생들을 성별로 분할할 수 있다.
+  - Map<Boolean, List<Student>>의 return 값을 받게 되며 get(true)로 조건에 맞는 학생 list를 얻을 수 있다.
+  - get(false)의 경우 조건에 맞지 않는 학생 (위 예시로는 여학생)의 list를 얻을 수 있다.
+- `collect(Collectors.partitioningBy(Student::isMale, counting()))` 과 같은 방식으로 학생의 수 역시 구할 수 있다.
+- 이외에도 두 번째 파라미터에 maxBy, collectingAndThen, 또 다른 partitioningBy() 등을 넣어줄 수 있다.
+  - 경우에 따라 T 자체나 Optional<T>를 Map으로 return 받을 수 있음
+
+groupingBy()에 의한 분류
+
+- groupingBy()로 그룹화 시 기본적으로 List<T>에 값을 담음
+  - 필요시 toList() 대신 toSet(), toCollection(HashSet::new)을 사용 가능 (Map은 지네릭 타입도 적절히 변경해 줘야 함)
+- groupingBy()을 여러 번 사용하면 다수준 그룹화가 가능함
+
+### 2.7 Collector 구현하기
+
+- Collector 인터페이스를 구현해야 함
+- characteristics()를 제외한 4개의 람다식을 작성해야 함
+  - supplier() : 작업 결과를 저장할 공간을 제공
+  - accumulator() : 스트림의 요소를 수집할 방법 제공
+  - combiner() : 두 저장 공간을 병합할 방법을 제공 (병렬 스트림)
+  - finisher() : 결과를 최종적으로 변환할 방법 제공
+- characteristics()는 컬렉터가 수행하는 작업의 속성에 대한 정보를 제공
+  - Characteristics.CONCURRENT : 병렬로 처리할 수 있는 작업
+  - Characteristics.UNORDERED : 스트림의 요소의 순서가 유지될 필요가 없는 작업
+  - Characteristics.IDENTITY_FINISH : finisher()가 항등 함수인 작업
+  - 아무런 속성도 지정하고 싶지 않을 땐 Collections.emptySet()을 return 하도록 구현
