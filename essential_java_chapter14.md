@@ -221,7 +221,7 @@ Stream\<Integer>와 IntStream
 배열
 
 - Stream\<T> Stream.of(~) 메서드로 스트림 생성
-- int 등의 기본형은 `IntSTream IntStream.of(~)` 메서드로 생성
+- int 등의 기본형은 `IntStream IntStream.of(~)` 메서드로 생성
 
 특정 범위의 정수
 
