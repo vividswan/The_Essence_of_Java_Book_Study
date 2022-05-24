@@ -118,3 +118,14 @@
   - getPort() : 상대편 소켓을 알아낼 수 있음
   - getLocalPort() : 소켓 자신이 사용하는 포트를 알아낼 수 있음
 - 서버 소켓이 아닌 소켓은 서버 소켓이 사용하고 있는 포트를 사용할 수 있음
+- 여러 개의 쓰레드를 생성해서 클라이언트의 요청을 동시에 처리할 수 있다.
+  - 클라이언트의 수가 많을 때는 요청을 병렬로 처리하는 것이 좋음
+- 소켓으로 데이터를 송신하는 작업과 수신하는 작업을 별도의 쓰레드로 처리하도록 할 수 있다.
+
+### 2.3 UDP 소켓 프로그래밍
+
+- UDP 소켓 프로그래밍에서는 DatagramSocket과 DatagramPacket을 사용
+  - 연결 지향적인 프로토콜이 아니므로 ServerSocket이 필요 X
+  - DatagramSocket을 소켓으로 사용하며 데이터를 DatagramPacket에 담아서 전송
+  - DatagramPacket은 헤더와 데이터로 구성 (헤더엔 수신할 호스트의 정보가 저장)
+- 클라이언트가 DatagramPacket을 생성해서 DatagramSocket으로 서버에 전송하면, 서버는 전송받은 DatagramPacket의 getAddress(), getPort()를 호출해서 클라이언트의 정보를 얻어서 서버 시간을 DatagramPacket에 담아서 전송
