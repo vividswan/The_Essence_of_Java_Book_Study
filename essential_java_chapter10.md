@@ -56,7 +56,7 @@ Date와 Calendar 간의 변환
 - parse() 메서드로 날짜 데이터의 출력 형식을 변환 가능
   - 문자열 source를 날짜 source로
 
-### 2.3 ChiceFormat
+### 2.3 ChoiceFormat
 
 - 특정 범위에 속하는 값을 문자열로 변환
 - 연속적 또는 불연속적인 범위의 값을 처리하는 데 도움
